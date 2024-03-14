@@ -16,18 +16,18 @@
 # (en creacion). El nombre de los archivos se recibe por argumento
 # al momento de ejecutar el script.
 function tienePermisoLectura(){
-    if test -r "/home/ricardo/Escritorio/ej2/$1"; then
+    if test -r "/home/ricardo/Escritorio/practica1/practica1-so/$1"; then
         echo "El archivo $1 tiene permiso de lectura..." 
     fi
 }
 
 function obtenerDuenioArchivo(){
-    owner=$(stat -c '%U' "/home/ricardo/Escritorio/ej2/$1")
+    owner=$(stat -c '%U' "/home/ricardo/Escritorio/practica1/practica1-so/$1")
     echo "El dueño del archivo $1 es $owner"
 }
 
 function tienePermisoEjecucion(){
-    if test -x "/home/ricardo/Escritorio/ej2/$1"; then
+    if test -x "/home/ricardo/Escritorio/practica1/practica1-so/$1"; then
         echo "El archivo $1 tiene permiso de ejecución..." 
 	else
 		echo "El archivo $1 NO tiene permiso de ejecución..."
@@ -35,9 +35,9 @@ function tienePermisoEjecucion(){
 }
 
 function archivoMasAntiguo(){
-    file1="/home/ricardo/Escritorio/ej2/$1"
-    file2="/home/ricardo/Escritorio/ej2/$2"
-    file3="/home/ricardo/Escritorio/ej2/$3"
+    file1="/home/ricardo/Escritorio/practica1/practica1-so/$1"
+    file2="/home/ricardo/Escritorio/practica1/practica1-so/$2"
+    file3="/home/ricardo/Escritorio/practica1/practica1-so/$3"
 
     if [ "$file1" -ot "$file2" ] && [ "$file1" -ot "$file3" ]; then
         echo "$1 es el archivo más viejo"
@@ -52,7 +52,7 @@ function archivoMasAntiguo(){
 }
 
 function existe(){
-    if [ -e "/home/ricardo/Escritorio/ej2/$1" ]; then
+    if [ -e "/home/ricardo/Escritorio/practica1/practica1-so/$1" ]; then
         return 0
     else
         echo "El archivo $1 no existe" 
@@ -70,40 +70,7 @@ function existe(){
 # chmod -r archivo.txt  			-- lectura
 # chmod -x archivo.txt				-- ejecucion
 # chmod -rx archivo.txt	 			-- remueve ambos permisos
-function ejercicio3(){
-	if existe "$1"; then
-	# PERMISO DE LECTURA
-	tienePermisoLectura "$1"
-	else
-		echo "El archivo $1 no existe..."
-	fi
 
-	echo -e "\n"
-
-	if existe "$2"; then
-		# EXISTE Y TIENE PERMISOS DE EJECUCION
-		echo "El archivo $2 existe..."
-		tienePermisoEjecucion "$2"
-	else
-		echo "El archivo $2 no existe..."
-	fi
-
-	echo -e "\n"
-
-	if existe "$3"; then
-		# OBTENER DUENO ARCHIVO
-		obtenerDuenioArchivo "$3"
-	else
-		echo "El archivo $3 no existe..."
-	fi
-
-	echo -e "\n"
-
-	if existe "$1" && existe "$2" && existe "$3"; then
-		# ARCHIVO MAS VIEJO
-		archivoMasAntiguo "$1" "$2" "$3"
-	fi
-}
 
 ####################################################################
 
@@ -146,6 +113,24 @@ function ejercicio6(){
 	read -p "Digite el nombre del archivo: " nombreArchivo
 	read -p "Digite el nombre del directorio destino: " nomDirectorio
 
+	if [ ! -f "$1" ]; then
+		echo "El archivo $1 no existe."
+		return 0
+	fi
+
+	if [ ! -d "$2" ]; then
+		echo "El directorio destino $2 no existe."
+		return 0
+	fi
+
+	while IFS= read -r nombre_archivo; do
+		if [ -f "$nombre_archivo" ]; then
+			cp "$nombre_archivo" "$2/"
+			echo "Archivo '$nombre_archivo' copiado a '$2/'."
+		else
+			echo "El archivo '$nombre_archivo' no existe."
+		fi
+	done < "$1"
 	
 }
 
@@ -186,7 +171,38 @@ while [ $bucle -eq 1 ]; do
 			
 			# VALIDACION DE ARCHIVOS
 			if [ $# -ge 3 ]; then 
-				ejercicio3 "$1 $2 $3"
+					if existe "$1"; then
+						# PERMISO DE LECTURA
+						tienePermisoLectura "$1"
+					else
+						echo "El archivo $1 no existe..."
+					fi
+
+					echo -e "\n"
+
+					if existe "$2"; then
+						# EXISTE Y TIENE PERMISOS DE EJECUCION
+						echo "El archivo $2 existe..."
+						tienePermisoEjecucion "$2"
+					else
+						echo "El archivo $2 no existe..."
+					fi
+
+					echo -e "\n"
+
+					if existe "$3"; then
+						# OBTENER DUENO ARCHIVO
+						obtenerDuenioArchivo "$3"
+					else
+						echo "El archivo $3 no existe..."
+					fi
+
+					echo -e "\n"
+
+					if existe "$1" && existe "$2" && existe "$3"; then
+						# ARCHIVO MAS VIEJO
+						archivoMasAntiguo "$1" "$2" "$3"
+					fi
 			else
 				echo "Debes proporcionar el nombre de tres 
 				archivos al compilar el programa"
