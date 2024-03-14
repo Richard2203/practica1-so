@@ -1,11 +1,27 @@
 #! /bin/bash
 ####################################################################
 #                          EJERCICIO 1
+function ejercicio1(){
+	tail -n 15 /var/log/syslog | tac > syslog.txt 2>/dev/null
+}
 
 ####################################################################
 #                          EJERCICIO 2
 
-
+function ejercicio2(){
+	a=10
+	b=$((2 * 10))
+	c=$((a + b / 2))
+	d=$(((2+3) * 10))
+	div=$(echo "scale=2; $c / 2" | bc)
+	res=$((b % c))
+	echo "a = $a"
+	echo "b = $b"
+	echo "c = $c"
+	echo "d = $d"
+	echo "div = $div"
+	echo "res = $res"
+}
 
 ####################################################################
 #                          EJERCICIO 3
@@ -73,7 +89,46 @@ function existe(){
 
 
 ####################################################################
+function ejercicio3(){
+	# VALIDACION DE ARCHIVOS
+	if [ $# -ge 3 ]; then 
+		if existe "$1"; then
+			# PERMISO DE LECTURA
+			tienePermisoLectura "$1"
+		else
+			echo "El archivo $1 no existe..."
+		fi
 
+		echo -e "\n"
+
+		if existe "$2"; then
+			# EXISTE Y TIENE PERMISOS DE EJECUCION
+			echo "El archivo $2 existe..."
+			tienePermisoEjecucion "$2"
+		else
+			echo "El archivo $2 no existe..."
+		fi
+
+		echo -e "\n"
+
+		if existe "$3"; then
+			# OBTENER DUENO ARCHIVO
+			obtenerDuenioArchivo "$3"
+		else
+			echo "El archivo $3 no existe..."
+		fi
+
+		echo -e "\n"
+
+		if existe "$1" && existe "$2" && existe "$3"; then
+			# ARCHIVO MAS VIEJO
+			archivoMasAntiguo "$1" "$2" "$3"
+		fi
+	else
+		echo "Debes proporcionar el nombre de tres 
+		archivos al compilar el programa"
+	fi	
+}
 
 ####################################################################
 #                          EJERCICIO 4
@@ -100,7 +155,22 @@ function ejercicio4(){
 ####################################################################
 #                          EJERCICIO 5
 ####################################################################
+function ejercicio5(){
+	if [ $# -eq 0 ]; then
+		echo "Sin argumentos"
+	else
 
+	echo "Se escribieron $# argumentos"
+	
+
+	echo "El valos de los argumentos ingresados son:"
+	for arg in "$@"; do
+		echo "$arg"
+	done
+	fi
+	echo -e "\n"
+	echo -e "\n"
+}
 
 
 ####################################################################
@@ -113,24 +183,33 @@ function ejercicio6(){
 	read -p "Digite el nombre del archivo: " nombreArchivo
 	read -p "Digite el nombre del directorio destino: " nomDirectorio
 
-	if [ ! -f "$1" ]; then
-		echo "El archivo $1 no existe."
+	direccionArchivo=$(find /home/ricardo/ -type f -name "$nombreArchivo" -quit)
+	direccionDirectorio=$(find /home/ricardo/ -type d -name "$nomDirectorio" -quit)
+
+	echo "$direccionArchivo $direccionDirectorio"
+
+	if [ ! -f "$direccionArchivo" ]; then
+		echo "El archivo $nombreArchivo no existe."
 		return 0
+	else
+		echo "El archivo $nombreArchivo existe."
 	fi
 
-	if [ ! -d "$2" ]; then
-		echo "El directorio destino $2 no existe."
+	if [ ! -d "$direccionDirectorio" ]; then
+		echo "El directorio destino $nomDirectorio no existe."
 		return 0
+	else
+		echo "El directorio destino $nomDirectorio existe."
 	fi
 
-	while IFS= read -r nombre_archivo; do
-		if [ -f "$nombre_archivo" ]; then
-			cp "$nombre_archivo" "$2/"
-			echo "Archivo '$nombre_archivo' copiado a '$2/'."
-		else
-			echo "El archivo '$nombre_archivo' no existe."
-		fi
-	done < "$1"
+	#hile IFS= read -r nombre_archivo; do
+	#	if [ -f "$nombre_archivo" ]; then
+	#		cp "$nombre_archivo" "$2/"
+	#		echo "Archivo '$nombre_archivo' copiado a '$2/'."
+	#	else
+	#		echo "El archivo '$nombre_archivo' no existe."
+	#	fi
+	#one < "$1"
 	
 }
 
@@ -156,59 +235,21 @@ while [ $bucle -eq 1 ]; do
 	case "$opc" in 
 		1)
 			echo "EJERCICIO 1"
+			ejercicio1
 			echo -e "\n"
 			echo -e "\n"
 		;;
 
 		2)
 	        echo "EJERCICIO 2"
+			ejercicio2
 			echo -e "\n"
 			echo -e "\n"
 		;;
 
 		3)
 			echo "EJERCICIO 3"
-			
-			# VALIDACION DE ARCHIVOS
-			if [ $# -ge 3 ]; then 
-					if existe "$1"; then
-						# PERMISO DE LECTURA
-						tienePermisoLectura "$1"
-					else
-						echo "El archivo $1 no existe..."
-					fi
-
-					echo -e "\n"
-
-					if existe "$2"; then
-						# EXISTE Y TIENE PERMISOS DE EJECUCION
-						echo "El archivo $2 existe..."
-						tienePermisoEjecucion "$2"
-					else
-						echo "El archivo $2 no existe..."
-					fi
-
-					echo -e "\n"
-
-					if existe "$3"; then
-						# OBTENER DUENO ARCHIVO
-						obtenerDuenioArchivo "$3"
-					else
-						echo "El archivo $3 no existe..."
-					fi
-
-					echo -e "\n"
-
-					if existe "$1" && existe "$2" && existe "$3"; then
-						# ARCHIVO MAS VIEJO
-						archivoMasAntiguo "$1" "$2" "$3"
-					fi
-			else
-				echo "Debes proporcionar el nombre de tres 
-				archivos al compilar el programa"
-			fi	
-
-
+			ejercicio3 "$@"
 			echo -e "\n"
 			echo -e "\n"
 		;;
@@ -219,15 +260,14 @@ while [ $bucle -eq 1 ]; do
 			echo -e "\n"
 		;;
 
-		5)
-			
+		5)	
 			echo "EJERCICIO 5"
-			echo -e "\n"
-			echo -e "\n"
+			ejercicio5 "$@"
 		;;
 
 		6)
 			echo "EJERCICIO 6"
+			ejercicio6
 			echo -e "\n"
 			echo -e "\n"
 		;;
