@@ -188,12 +188,12 @@ function ejercicio6(){
 	direccionArchivo=$(find /home/ricardo/ -type f -name "$nombreArchivo" | head -n 1)
 	direccionDirectorio=$(find /home/ricardo/ -type d -name "$nomDirectorio" | head -n 1)
 
-	if [ -z "$direccionArchivo" ]; then
+	if [ ! -e "$direccionArchivo" ]; then
 		echo "El archivo $nombreArchivo no existe."
 		return 0
 	fi
 
-	if [ -z "$direccionDirectorio" ]; then
+	if [ ! -e "$direccionDirectorio" ]; then
 		echo "El directorio destino $nomDirectorio no existe."
 		return 0
 	fi
