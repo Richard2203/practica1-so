@@ -199,14 +199,14 @@ function ejercicio6(){
 	fi
 
 	while IFS= read -r nombre_archivo; do
-		dirArchCopiar=$(find /home/ricardo/ -type d -name "$nombre_archivo" | head -n 1)
+		dirArchCopiar=$(find /home/ricardo/ -type f -name "$nombre_archivo" | head -n 1)
 		echo "$dirArchCopiar"
-		#if [ -f "$dirArchCopiar" ]; then
-		#	cp "$dirArchCopiar" "$direccionDirectorio/"
-		#	echo "Archivo '$nombre_archivo' copiado a '$direccionDirectorio/'."
-		#else
-		#	echo "El archivo '$nombre_archivo' no existe."
-		#fi
+		if [ -f "$dirArchCopiar" ]; then
+			cp "$dirArchCopiar" "$direccionDirectorio/"
+			echo "Archivo '$nombre_archivo' copiado a '$direccionDirectorio/'."
+		else
+			echo "El archivo '$nombre_archivo' no existe."
+		fi
 	done < "$direccionArchivo"
 	
 }
