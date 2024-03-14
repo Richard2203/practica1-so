@@ -200,7 +200,7 @@ function ejercicio6(){
 
 	while IFS= read -r nombre_archivo; do
 		dirArchCopiar=$(find /home/ricardo/ -type f -name "$nombre_archivo" | head -n 1)
-		echo "$dirArchCopiar"
+		
 		if [ -f "$dirArchCopiar" ]; then
 			cp "$dirArchCopiar" "$direccionDirectorio/"
 			echo "Archivo '$nombre_archivo' copiado a '$direccionDirectorio/'."
