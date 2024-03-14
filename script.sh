@@ -2,9 +2,10 @@
 ####################################################################
 #                          EJERCICIO 1
 function ejercicio1(){
-	tail -n 15 /var/log/syslog | tac > syslog.txt 2>/dev/null
+        tail -n 15 /var/log/syslog | tac > syslog.txt 2>/dev/null
+        echo "Impresion del archivo syslog.txt"
+        cat syslog.txt
 }
-
 ####################################################################
 #                          EJERCICIO 2
 
@@ -180,36 +181,33 @@ function ejercicio5(){
 # otro directorio. El usuario introduce el nombre del archivo
 # y el nombre del directorio destino.
 function ejercicio6(){
+
 	read -p "Digite el nombre del archivo: " nombreArchivo
 	read -p "Digite el nombre del directorio destino: " nomDirectorio
 
-	direccionArchivo=$(find /home/ricardo/ -type f -name "$nombreArchivo" -quit)
-	direccionDirectorio=$(find /home/ricardo/ -type d -name "$nomDirectorio" -quit)
+	direccionArchivo=$(find /home/ricardo/ -type f -name "$nombreArchivo" | head -n 1)
+	direccionDirectorio=$(find /home/ricardo/ -type d -name "$nomDirectorio" | head -n 1)
 
-	echo "$direccionArchivo $direccionDirectorio"
-
-	if [ ! -f "$direccionArchivo" ]; then
+	if [ -z "$direccionArchivo" ]; then
 		echo "El archivo $nombreArchivo no existe."
 		return 0
-	else
-		echo "El archivo $nombreArchivo existe."
 	fi
 
-	if [ ! -d "$direccionDirectorio" ]; then
+	if [ -z "$direccionDirectorio" ]; then
 		echo "El directorio destino $nomDirectorio no existe."
 		return 0
-	else
-		echo "El directorio destino $nomDirectorio existe."
 	fi
 
-	#hile IFS= read -r nombre_archivo; do
-	#	if [ -f "$nombre_archivo" ]; then
-	#		cp "$nombre_archivo" "$2/"
-	#		echo "Archivo '$nombre_archivo' copiado a '$2/'."
-	#	else
-	#		echo "El archivo '$nombre_archivo' no existe."
-	#	fi
-	#one < "$1"
+	while IFS= read -r nombre_archivo; do
+		dirArchCopiar=$(find /home/ricardo/ -type d -name "$nombre_archivo" | head -n 1)
+		echo "$dirArchCopiar"
+		#if [ -f "$dirArchCopiar" ]; then
+		#	cp "$dirArchCopiar" "$direccionDirectorio/"
+		#	echo "Archivo '$nombre_archivo' copiado a '$direccionDirectorio/'."
+		#else
+		#	echo "El archivo '$nombre_archivo' no existe."
+		#fi
+	done < "$direccionArchivo"
 	
 }
 
